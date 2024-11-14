@@ -603,7 +603,8 @@ if __name__ == '__main__':
     login_form.show()
     login_form_res = app.exec()
 
-    bob_trader = bob_trader(login_form)
-    bob_trader.show()
-    bob_trader_res = app.exec()
-    sys.exit(bob_trader_res)
+    if login_form.active_account:
+        bob_trader = bob_trader(login_form)
+        bob_trader.show()
+        bob_trader_res = app.exec()
+        sys.exit(bob_trader_res)
