@@ -12,7 +12,7 @@ from fubon_neo.constant import TimeInForce, OrderType, PriceType, MarketType, BS
 from breakout_ui import MyUI
 
 from PySide6.QtWidgets import QApplication, QWidget, QTableWidgetItem, QFileDialog
-from PySide6.QtGui import QTextCursor, QColor
+from PySide6.QtGui import QTextCursor, QColor, QFont, QPalette
 from PySide6.QtCore import Qt, Signal, QObject
 from threading import Timer
 
@@ -182,7 +182,10 @@ class bob_trader(QWidget):
             self.bob_ui.tablewidget.item(self.row_idx_map[symbol], self.col_idx_map['漲幅(%)']).setForeground(QColor(Qt.white))
         else:
             self.bob_ui.tablewidget.item(self.row_idx_map[symbol], self.col_idx_map['漲幅(%)']).setBackground(QColor(Qt.transparent))
-            self.bob_ui.tablewidget.item(self.row_idx_map[symbol], self.col_idx_map['漲幅(%)']).setForeground(QColor(Qt.black))
+            item = self.bob_ui.tablewidget.item(self.row_idx_map[symbol], self.col_idx_map['漲幅(%)'])
+            # source.ensurePolished() # leave this commented for now
+            default_color = self.bob_ui.tablewidget.palette().windowText().color()
+            item.setForeground(default_color)
 
     def update_filled_qty_item(self, symbol, filled_qty):
         self.bob_ui.tablewidget.item(self.row_idx_map[symbol], self.col_idx_map['成交數量']).setText(str(filled_qty))
@@ -409,8 +412,6 @@ class bob_trader(QWidget):
         self.bob_ui.button_stop.setVisible(True)
         self.bob_ui.folder_btn.setEnabled(False)
         self.bob_ui.read_csv_btn.setEnabled(False)
-        # self.bob_ui.tablewidget.clearContents()
-        # self.bob_ui.tablewidget.setRowCount(0)
 
         self.print_log(f"現在使用 單檔金額:{self.trade_budget}, 總金額:{self.total_budget}, 交易量門檻:{self.volume_threshold}, 漲幅門檻:{self.chg_p_threshold}")
 
@@ -448,6 +449,7 @@ class bob_trader(QWidget):
 
         self.active_logout=True
         self.wsstock.disconnect()
+        self.subscribed_ids = {}
 
     def tick_diff_price_cal(self, limit_up_price, diff_num):
         epsilon = 0.0000001
@@ -500,10 +502,14 @@ class bob_trader(QWidget):
 
             self.target_symbols = list(self.buy_target.iloc[:, 1].str.replace('.TW', ''))
             self.print_log("target symbols: "+str(self.target_symbols))
-            new_target_symbols = list(set(self.target_symbols).difference(set(self.subscribed_ids.keys())))
-            self.print_log("new target: "+str(new_target_symbols))
 
-            for symbol in new_target_symbols:
+            row = self.bob_ui.tablewidget.rowCount()
+            if row!=0:
+                self.bob_ui.tablewidget.clearContents()
+                self.bob_ui.tablewidget.setRowCount(0)
+                self.row_idx_map = {}
+
+            for symbol in self.target_symbols:
                 ticker_res = self.reststock.intraday.ticker(symbol=symbol)
                 # self.print_log(ticker_res['name'])
                 self.last_close_dict[symbol] = ticker_res['referencePrice']
@@ -598,7 +604,9 @@ if __name__ == '__main__':
         app = QApplication(sys.argv)
     else:
         app = QApplication.instance()
-    app.setStyleSheet("QWidget{font-size: 12pt;}")
+    
+    font = QFont("Microsoft JhengHei", 12)
+    app.setFont(font)
     login_form = login_handler(sdk, 'breakout.png')
     login_form.show()
     login_form_res = app.exec()

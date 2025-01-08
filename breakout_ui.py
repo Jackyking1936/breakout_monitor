@@ -85,7 +85,7 @@ class MyUI(QWidget):
         label_change_percent = QLabel('漲幅(%)>=')
         layout_condition.addWidget(label_change_percent, 3, 3)
         self.lineEdit_change_percent = QLineEdit()
-        self.lineEdit_change_percent.setText('11')
+        self.lineEdit_change_percent.setText('100')
         layout_condition.addWidget(self.lineEdit_change_percent, 3, 4)
         label_change_percent_post = QLabel('%')
         layout_condition.addWidget(label_change_percent_post, 3, 5)
