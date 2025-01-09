@@ -10,7 +10,7 @@ class MyUI(QWidget):
         super().__init__()
 
         my_icon = QIcon()
-        my_icon.addFile('fast_icon.png')
+        my_icon.addFile('breakout.ico')
 
         self.setWindowIcon(my_icon)
         self.setWindowTitle("Python自選清單突破買進小幫手")

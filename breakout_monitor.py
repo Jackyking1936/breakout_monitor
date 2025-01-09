@@ -607,7 +607,7 @@ if __name__ == '__main__':
     
     font = QFont("Microsoft JhengHei", 12)
     app.setFont(font)
-    login_form = login_handler(sdk, 'breakout.png')
+    login_form = login_handler(sdk, 'breakout.ico')
     login_form.show()
     login_form_res = app.exec()
 

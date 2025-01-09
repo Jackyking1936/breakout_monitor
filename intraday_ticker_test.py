@@ -10,8 +10,8 @@ sdk = FubonSDK()
 accounts = sdk.login(user_info_dict['id'], user_info_dict['pwd'], Path(user_info_dict['cert_path']).__str__())
 print(accounts)
 #%%
-
 sdk.init_realtime() # 建立行情連線
-reststock = sdk.marketdata.rest_client.stock  
-reststock.intraday.ticker(symbol='2330')
+reststock = sdk.marketdata.rest_client.stock
+response = reststock.intraday.ticker(symbol='5484')
+
 # %%
